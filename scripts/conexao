@@ -1202,21 +1202,14 @@ exit 0' >$RCLOCAL
 				client
 				dev tun
 				proto $PROTOCOL
-				sndbuf 0
-				rcvbuf 0
 				remote /SSHPLUS? $porta
 				#payload "HTTP/1.0 [crlf]Host: m.youtube.com[crlf]CONNECT HTTP/1.0[crlf][crlf]|[crlf]"
 				http-proxy $IP 8080
-				resolv-retry 5
-				nobind
-				persist-key
-				persist-tun
 				remote-cert-tls server
 				cipher AES-256-CBC
 				comp-lzo yes
 				setenv opt block-outside-dns
 				key-direction 1
-				verb 3
 				auth-user-pass
 				keepalive 10 120
 				float
@@ -1251,7 +1244,7 @@ exit 0' >$RCLOCAL
 		[[ $(screen -list | grep -wc 'openpy') != '0' ]] && sksop="\033[1;32m◉" || sksop="\033[1;31m○"
 		echo ""
 		echo -e "\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mSOCKS SSH $var_sks1 \033[0m"
-		echo -e "\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mSOCKS OEPNVPN $sksop \033[0m"
+		echo -e "\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mSOCKS OPENVPN $sksop \033[0m"
 		echo -e "\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mABRIR PORTA\033[0m"
 		echo -e "\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mALTERAR STATUS\033[0m"
 		echo -e "\033[1;31m[\033[1;36m0\033[1;31m] \033[1;37m• \033[1;33mVOLTAR\033[0m"
