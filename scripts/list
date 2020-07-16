@@ -41,6 +41,7 @@ _mdls=("addhost" "delhost" "alterarsenha" "criarusuario" "expcleaner" "mudardata
 for _arq in ${_mdls[@]}; do
 	[[ -e $_dir1/$_arq ]] && rm $_dir1/$_arq >/dev/null 2>&1
 	wget -c -P $_dir1 https://raw.githubusercontent.com/script90/2.4/master/scripts/$_arq
+	sed -i -e 's/\r$//' $_dir1/$_arq
 	chmod +x $_dir1/$_arq
 done
 mv $_dir1/cabecalho $_dir1/bot $_dir1/open.py $_dir1/proxy.py $_dir2
