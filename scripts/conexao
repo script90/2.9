@@ -116,12 +116,11 @@
 			[[ -d "/etc/squid/" ]] && {
 				var_sqd="/etc/squid/squid.conf"
 				var_pay="/etc/squid/payload.txt"
-			} || {
-				[[ -d "/etc/squid3/" ]] && {
+				}
+			[[ -d "/etc/squid3/" ]] && {
 					var_sqd="/etc/squid3/squid.conf"
 					var_pay="/etc/squid3/payload.txt"
 				}
-			}
 			echo ".claro.com.br/
 .claro.com.sv/
 .facebook.net/
