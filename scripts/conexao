@@ -91,21 +91,21 @@
 			IP=$(wget -qO- ipv4.icanhazip.com)
 			echo -ne "\033[1;32mPARA CONTINUAR CONFIRME SEU IP: \033[1;37m"
 			read -e -i $IP ipdovps
-			if [[ -z "$ipdovps" ]]; then
+			[[ -z "$ipdovps" ]] && {
 				echo -e "\n\033[1;31mIP invalido\033[1;32m"
 				echo ""
 				read -p "Digite seu IP: " IP
-			fi
+			}
 			echo -e "\n\033[1;33mQUAIS PORTAS DESEJA ULTILIZAR NO SQUID \033[1;31m?"
 			echo -e "\n\033[1;33m[\033[1;31m!\033[1;33m] \033[1;32mDEFINA AS PORTAS EM SEQUENCIA \033[1;33mEX: \033[1;37m80 8080 8799"
 			echo ""
 			echo -ne "\033[1;32mINFORME AS PORTAS\033[1;37m: "
 			read portass
-			if [[ -z "$portass" ]]; then
+			[[ -z "$portass" ]] && {
 				echo -e "\n\033[1;31mPorta invalida!"
 				sleep 3
 				fun_conexao
-			fi
+			}
 			for porta in $(echo -e $portass); do
 				verif_ptrs $porta
 			done
@@ -113,13 +113,15 @@
 			echo ""
 			fun_bar 'apt-get update -y' 'apt-get install squid3 -y'
 			sleep 1
-			if [[ -d "/etc/squid/" ]]; then
+			[[ -d "/etc/squid/" ]] && {
 				var_sqd="/etc/squid/squid.conf"
 				var_pay="/etc/squid/payload.txt"
-			elif [[ -d "/etc/squid3/" ]]; then
-				var_sqd="/etc/squid3/squid.conf"
-				var_pay="/etc/squid3/payload.txt"
-			fi
+			} || {
+				[[ -d "/etc/squid3/" ]] && {
+					var_sqd="/etc/squid3/squid.conf"
+					var_pay="/etc/squid3/payload.txt"
+				}
+			}
 			echo ".claro.com.br/
 .claro.com.sv/
 .facebook.net/
@@ -127,7 +129,7 @@
 .speedtest.net/
 .tim.com.br/
 .vivo.com.br/
-.oi.com.br/" > $var_pay
+.oi.com.br/" >$var_pay
 			echo "acl url1 dstdomain -i 127.0.0.1
 acl url2 dstdomain -i localhost
 acl url3 dstdomain -i $ipdovps
@@ -142,9 +144,9 @@ http_access allow url4
 http_access allow payload
 http_access deny all
  
-#Portas" > $var_sqd
+#Portas" >$var_sqd
 			for Pts in $(echo -e $portass); do
-				echo -e "http_port $Pts" >> $var_sqd
+				echo -e "http_port $Pts" >>$var_sqd
 				[[ -f "/usr/sbin/ufw" ]] && ufw allow $Pts/tcp
 			done
 			echo -e "
@@ -152,18 +154,19 @@ http_access deny all
 visible_hostname SSHPLUS 
 via off
 forwarded_for off
-pipeline_prefetch off" >> $var_sqd
+pipeline_prefetch off" >>$var_sqd
 			sqd_conf() {
-				if [[ -d "/etc/squid/" ]]; then
+				[[ -d "/etc/squid/" ]] && {
 					squid -k reconfigure
 					service ssh restart
 					service squid restart
-					
-				elif [[ -d "/etc/squid3/" ]]; then
+				} || {
+					[[ -d "/etc/squid3/" ]] && {
 						squid3 -k reconfigure
 						service ssh restart
 						service squid3 restart
-				fi
+					}
+				}
 			}
 			echo -e "\n\033[1;32mCONFIGURANDO SQUID PROXY\033[0m"
 			echo ""
@@ -1199,21 +1202,14 @@ exit 0' >$RCLOCAL
 				client
 				dev tun
 				proto $PROTOCOL
-				sndbuf 0
-				rcvbuf 0
 				remote /SSHPLUS? $porta
 				#payload "HTTP/1.0 [crlf]Host: m.youtube.com[crlf]CONNECT HTTP/1.0[crlf][crlf]|[crlf]"
 				http-proxy $IP 8080
-				resolv-retry 5
-				nobind
-				persist-key
-				persist-tun
 				remote-cert-tls server
 				cipher AES-256-CBC
 				comp-lzo yes
 				setenv opt block-outside-dns
 				key-direction 1
-				verb 3
 				auth-user-pass
 				keepalive 10 120
 				float
@@ -1248,7 +1244,7 @@ exit 0' >$RCLOCAL
 		[[ $(screen -list | grep -wc 'openpy') != '0' ]] && sksop="\033[1;32m◉" || sksop="\033[1;31m○"
 		echo ""
 		echo -e "\033[1;31m[\033[1;36m1\033[1;31m] \033[1;37m• \033[1;33mSOCKS SSH $var_sks1 \033[0m"
-		echo -e "\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mSOCKS OEPNVPN $sksop \033[0m"
+		echo -e "\033[1;31m[\033[1;36m2\033[1;31m] \033[1;37m• \033[1;33mSOCKS OPENVPN $sksop \033[0m"
 		echo -e "\033[1;31m[\033[1;36m3\033[1;31m] \033[1;37m• \033[1;33mABRIR PORTA\033[0m"
 		echo -e "\033[1;31m[\033[1;36m4\033[1;31m] \033[1;37m• \033[1;33mALTERAR STATUS\033[0m"
 		echo -e "\033[1;31m[\033[1;36m0\033[1;31m] \033[1;37m• \033[1;33mVOLTAR\033[0m"
