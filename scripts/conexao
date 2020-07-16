@@ -111,14 +111,14 @@
 			done
 			echo -e "\n\033[1;32mINSTALANDO SQUID PROXY\033[0m"
 			echo ""
-			fun_bar 'apt-get update -y' 'apt-get install squid3 -y >/dev/null 2>&1'
+			fun_bar 'apt-get update -y' 'apt-get install squid3 -y'
 			sleep 1
 			if [[ -d "/etc/squid/" ]]; then
 				var_sqd="/etc/squid/squid.conf"
 				var_pay="/etc/squid/payload.txt"
 			elif [[ -d "/etc/squid3/" ]]; then
-					var_sqd="/etc/squid3/squid.conf"
-					var_pay="/etc/squid3/payload.txt"
+				var_sqd="/etc/squid3/squid.conf"
+				var_pay="/etc/squid3/payload.txt"
 			fi
 			echo ".claro.com.br/
 .claro.com.sv/
@@ -152,7 +152,7 @@ http_access deny all
 visible_hostname SSHPLUS 
 via off
 forwarded_for off
-pipeline_prefetch off" >>$var_sqd
+pipeline_prefetch off" >> $var_sqd
 			sqd_conf() {
 				if [[ -d "/etc/squid/" ]]; then
 					squid -k reconfigure
