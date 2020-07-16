@@ -91,21 +91,21 @@
 			IP=$(wget -qO- ipv4.icanhazip.com)
 			echo -ne "\033[1;32mPARA CONTINUAR CONFIRME SEU IP: \033[1;37m"
 			read -e -i $IP ipdovps
-			[[ -z "$ipdovps" ]] && {
+			if [[ -z "$ipdovps" ]]; then
 				echo -e "\n\033[1;31mIP invalido\033[1;32m"
 				echo ""
 				read -p "Digite seu IP: " IP
-			}
+			fi
 			echo -e "\n\033[1;33mQUAIS PORTAS DESEJA ULTILIZAR NO SQUID \033[1;31m?"
 			echo -e "\n\033[1;33m[\033[1;31m!\033[1;33m] \033[1;32mDEFINA AS PORTAS EM SEQUENCIA \033[1;33mEX: \033[1;37m80 8080 8799"
 			echo ""
 			echo -ne "\033[1;32mINFORME AS PORTAS\033[1;37m: "
 			read portass
-			[[ -z "$portass" ]] && {
+			if [[ -z "$portass" ]]; then
 				echo -e "\n\033[1;31mPorta invalida!"
 				sleep 3
 				fun_conexao
-			}
+			fi
 			for porta in $(echo -e $portass); do
 				verif_ptrs $porta
 			done
@@ -113,14 +113,13 @@
 			echo ""
 			fun_bar 'apt-get update -y' 'apt-get install squid3 -y >/dev/null 2>&1'
 			sleep 1
-			[[ -d "/etc/squid/" ]] && {
+			if [[ -d "/etc/squid/" ]]; then
 				var_sqd="/etc/squid/squid.conf"
 				var_pay="/etc/squid/payload.txt"
-				}
-			[[ -d "/etc/squid3/" ]] && {
+			elif [[ -d "/etc/squid3/" ]]; then
 					var_sqd="/etc/squid3/squid.conf"
 					var_pay="/etc/squid3/payload.txt"
-				}
+			fi
 			echo ".claro.com.br/
 .claro.com.sv/
 .facebook.net/
@@ -128,7 +127,7 @@
 .speedtest.net/
 .tim.com.br/
 .vivo.com.br/
-.oi.com.br/" >$var_pay
+.oi.com.br/" > $var_pay
 			echo "acl url1 dstdomain -i 127.0.0.1
 acl url2 dstdomain -i localhost
 acl url3 dstdomain -i $ipdovps
@@ -143,9 +142,9 @@ http_access allow url4
 http_access allow payload
 http_access deny all
  
-#Portas" >$var_sqd
+#Portas" > $var_sqd
 			for Pts in $(echo -e $portass); do
-				echo -e "http_port $Pts" >>$var_sqd
+				echo -e "http_port $Pts" >> $var_sqd
 				[[ -f "/usr/sbin/ufw" ]] && ufw allow $Pts/tcp
 			done
 			echo -e "
@@ -155,17 +154,16 @@ via off
 forwarded_for off
 pipeline_prefetch off" >>$var_sqd
 			sqd_conf() {
-				[[ -d "/etc/squid/" ]] && {
+				if [[ -d "/etc/squid/" ]]; then
 					squid -k reconfigure
 					service ssh restart
 					service squid restart
-				} || {
-					[[ -d "/etc/squid3/" ]] && {
+					
+				elif [[ -d "/etc/squid3/" ]]; then
 						squid3 -k reconfigure
 						service ssh restart
 						service squid3 restart
-					}
-				}
+				fi
 			}
 			echo -e "\n\033[1;32mCONFIGURANDO SQUID PROXY\033[0m"
 			echo ""
