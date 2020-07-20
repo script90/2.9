@@ -1203,7 +1203,7 @@ exit 0' >$RCLOCAL
 				dev tun
 				proto $PROTOCOL
 				remote /SSHPLUS? $porta
-				#payload "HTTP/1.0 [crlf]Host: m.youtube.com[crlf]CONNECT HTTP/1.0[crlf][crlf]|[crlf]"
+				#payload "HTTP/1.0 [crlf]Host: m.youtube.com[crlf] HTTP/1.0[crlf][crlf]#"
 				http-proxy $IP 8080
 				remote-cert-tls server
 				cipher AES-256-CBC
